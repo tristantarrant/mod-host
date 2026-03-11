@@ -10,6 +10,7 @@ Environment="JACK_NO_AUDIO_RESERVATION=1"
 Environment="HOME=/var/lib/rustyfoot"
 Environment="XDG_CONFIG_HOME=/var/lib/rustyfoot/.config"
 Environment="XDG_DATA_HOME=/var/lib/rustyfoot/.local/share"
+Environment="XDG_CACHE_HOME=/var/cache/rustyfoot"
 Environment="LV2_PATH=/var/lib/rustyfoot/plugins:/usr/lib/lv2:/usr/local/lib/lv2"
 EnvironmentFile=/etc/jackd/jackd.conf
 ExecStart=/usr/bin/jackd -R -P ${PRIORITY} -S -t ${TIMEOUT} \

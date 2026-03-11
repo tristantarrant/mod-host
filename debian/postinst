@@ -11,11 +11,17 @@ case "$1" in
         # Create dedicated system user for JACK/mod-host
         if ! getent passwd modhost >/dev/null 2>&1; then
             adduser --system --group --no-create-home \
-                --home /nonexistent --shell /usr/sbin/nologin \
+                --home /var/lib/rustyfoot --shell /usr/sbin/nologin \
                 modhost
+        else
+            # Ensure home directory is correct on upgrade
+            usermod -d /var/lib/rustyfoot modhost 2>/dev/null || true
         fi
         # Add to required groups: audio (ALSA/JACK), video/render/input/gpio (FlutterPi HMI)
         usermod -a -G audio,video,render,input,gpio modhost 2>/dev/null || true
+        # Create cache directory for shader cache etc.
+        mkdir -p /var/cache/rustyfoot
+        chown modhost:modhost /var/cache/rustyfoot
 
         # Try the auto-detected device first, fall back to manual
         db_get mod-host/audio-device
