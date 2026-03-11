@@ -14,8 +14,8 @@ case "$1" in
                 --home /nonexistent --shell /usr/sbin/nologin \
                 modhost
         fi
-        # Add to audio group for ALSA/JACK device access
-        usermod -a -G audio modhost 2>/dev/null || true
+        # Add to required groups: audio (ALSA/JACK), video and render (FlutterPi HMI)
+        usermod -a -G audio,video,render modhost 2>/dev/null || true
 
         # Try the auto-detected device first, fall back to manual
         db_get mod-host/audio-device
