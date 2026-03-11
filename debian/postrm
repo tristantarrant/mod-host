@@ -1,0 +1,20 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+    purge)
+        # Remove generated udev rule
+        rm -f /etc/udev/rules.d/80-mod-host.rules
+        # Remove jackd config
+        rm -f /etc/jackd/jackd.conf
+        rmdir /etc/jackd 2>/dev/null || true
+        # Reload udev rules
+        udevadm control --reload-rules 2>/dev/null || true
+        # Remove dedicated system user
+        deluser --system modhost 2>/dev/null || true
+        ;;
+esac
+
+#DEBHELPER#
+
+exit 0

@@ -1,0 +1,29 @@
+Source: mod-host
+Section: sound
+Priority: optional
+Maintainer: Dataforte <info@dataforte.nl>
+Build-Depends: debhelper (>= 13),
+               pkg-config,
+               liblilv-dev,
+               libjack-jackd2-dev | libjack-dev,
+               libreadline-dev,
+               lv2-dev,
+               libfftw3-dev
+Standards-Version: 4.6.0
+
+Package: mod-host
+Architecture: any
+Pre-Depends: debconf
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         adduser,
+         jackd2,
+         udev
+Description: LV2 host for MOD Audio devices
+ mod-host is an LV2 host for the MOD Audio platform. It loads LV2 plugins,
+ connects them via JACK, and provides a TCP control interface. It runs as a
+ JACK internal client, managed via the JACK session mechanism.
+ .
+ This package includes a systemd service for JACK with configurable audio
+ device parameters, and a udev rule to auto-start when the configured USB
+ audio device is connected.

@@ -1,0 +1,28 @@
+[Unit]
+Description=JACK Audio Server for mod-host
+
+[Service]
+LimitRTPRIO=95
+LimitMEMLOCK=infinity
+LimitRTTIME=infinity
+Environment="JACK_NO_AUDIO_RESERVATION=1"
+Environment="LV2_PATH=/var/lib/rustyfoot/plugins:/usr/lib/lv2:/usr/local/lib/lv2"
+EnvironmentFile=/etc/jackd/jackd.conf
+ExecStart=/usr/bin/jackd -R -P ${PRIORITY} -S -t ${TIMEOUT} \
+    -C /etc/jackd/jack-internal-session.conf \
+    -d alsa \
+    -p ${PERIOD_SIZE} \
+    -n ${NPERIODS} \
+    -r ${SAMPLE_RATE} \
+    -C hw:${ALSA_DEVICE} \
+    -P hw:${ALSA_DEVICE} \
+    -I ${INPUT_LATENCY} \
+    -O ${OUTPUT_LATENCY} \
+    -X seq
+Restart=always
+User=modhost
+IOSchedulingClass=realtime
+IOSchedulingPriority=0
+StandardOutput=journal+console
+StandardError=journal+console
+SyslogIdentifier=jack2

@@ -1,0 +1,31 @@
+#!/usr/bin/make -f
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	$(MAKE) SKIP_READLINE=0
+
+override_dh_auto_install:
+	# Install mod-host binary
+	install -D -m 755 mod-host debian/mod-host/usr/bin/mod-host
+	# Install JACK internal clients
+	install -D -m 644 mod-host.so debian/mod-host/usr/lib/jack/mod-host.so
+	install -D -m 644 fake-input.so debian/mod-host/usr/lib/jack/fake-input.so
+	install -D -m 644 mod-monitor.so debian/mod-host/usr/lib/jack/mod-monitor.so
+	# Install JACK session config
+	install -D -m 644 etc/jackd/jack-internal-session.conf debian/mod-host/etc/jackd/jack-internal-session.conf
+	# Install JACK configuration file
+	install -D -m 644 debian/jackd.conf debian/mod-host/etc/jackd/jackd.conf
+	# Install systemd service
+	install -D -m 644 debian/jackd-modhost.service debian/mod-host/lib/systemd/system/jackd-modhost.service
+	# Install man page
+	install -D -m 644 doc/mod-host.1 debian/mod-host/usr/share/man/man1/mod-host.1
+
+override_dh_auto_test:
+	# Skip tests during build
+
+override_dh_auto_clean:
+	$(MAKE) clean 2>/dev/null || true

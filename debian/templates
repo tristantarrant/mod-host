@@ -1,0 +1,21 @@
+Template: mod-host/audio-device
+Type: select
+Choices: ${choices}
+Description: USB audio device for mod-host:
+ Select the USB audio device that should be used with JACK and mod-host.
+ When this device is plugged in, the JACK audio server and mod-host will
+ start automatically.
+ .
+ If your device is not listed, make sure it is plugged in and run
+ 'dpkg-reconfigure mod-host' to detect it.
+
+Template: mod-host/audio-device-manual
+Type: string
+Default:
+Description: Manual USB device specification (vendor:product:alsa_name):
+ No USB audio devices with both playback and capture were detected.
+ Enter the device specification manually as vendor_id:product_id:alsa_name.
+ For example: 1397:0508:U192k
+ .
+ You can find the vendor and product IDs using 'lsusb', and the ALSA
+ device name using 'cat /proc/asound/cards'.

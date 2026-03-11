@@ -1,0 +1,67 @@
+#!/bin/sh
+set -e
+
+. /usr/share/debconf/confmodule
+
+# Detect USB audio devices with both playback and capture
+detect_usb_audio_devices() {
+    devices=""
+    for card in /sys/class/sound/card[0-9]*; do
+        num=$(basename "$card" | sed 's/card//')
+
+        # Check for both playback and capture PCM devices
+        has_playback=false
+        has_capture=false
+        for pcm in /proc/asound/card${num}/pcm*p; do
+            [ -d "$pcm" ] && has_playback=true
+            break
+        done
+        for pcm in /proc/asound/card${num}/pcm*c; do
+            [ -d "$pcm" ] && has_capture=true
+            break
+        done
+        if [ "$has_playback" != "true" ] || [ "$has_capture" != "true" ]; then
+            continue
+        fi
+
+        # Walk sysfs parent chain to find USB vendor/product
+        devpath=$(readlink -f "$card/device" 2>/dev/null)
+        usbdev="$devpath"
+        vendor="" product="" manufacturer="" productname=""
+        while [ -n "$usbdev" ] && [ "$usbdev" != "/" ]; do
+            if [ -f "$usbdev/idVendor" ]; then
+                vendor=$(cat "$usbdev/idVendor")
+                product=$(cat "$usbdev/idProduct")
+                manufacturer=$(cat "$usbdev/manufacturer" 2>/dev/null || true)
+                productname=$(cat "$usbdev/product" 2>/dev/null || true)
+                break
+            fi
+            usbdev=$(dirname "$usbdev")
+        done
+
+        # Skip non-USB cards
+        [ -z "$vendor" ] && continue
+
+        alsa_name=$(cat "/proc/asound/card${num}/id" 2>/dev/null)
+        label="${vendor}:${product} - ${manufacturer} ${productname} (hw:${alsa_name})"
+
+        if [ -n "$devices" ]; then
+            devices="${devices}, ${label}"
+        else
+            devices="$label"
+        fi
+    done
+
+    echo "$devices"
+}
+
+devices=$(detect_usb_audio_devices)
+
+if [ -n "$devices" ]; then
+    db_subst mod-host/audio-device choices "$devices"
+    db_input high mod-host/audio-device || true
+    db_go || true
+else
+    db_input high mod-host/audio-device-manual || true
+    db_go || true
+fi

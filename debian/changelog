@@ -1,0 +1,5 @@
+mod-host (0.10.6) unstable; urgency=medium
+
+  * Initial Debian packaging.
+
+ -- Dataforte <info@dataforte.nl>  Tue, 11 Mar 2026 12:00:00 +0100
