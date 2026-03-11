@@ -1,5 +1,6 @@
 [Unit]
 Description=JACK Audio Server for mod-host
+StopWhenUnneeded=yes
 
 [Service]
 LimitRTPRIO=95
@@ -19,7 +20,8 @@ ExecStart=/usr/bin/jackd -R -P ${PRIORITY} -S -t ${TIMEOUT} \
     -I ${INPUT_LATENCY} \
     -O ${OUTPUT_LATENCY} \
     -X seq
-Restart=always
+Restart=on-failure
+RestartSec=3
 User=modhost
 IOSchedulingClass=realtime
 IOSchedulingPriority=0
