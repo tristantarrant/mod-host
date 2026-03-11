@@ -20,7 +20,7 @@ override_dh_auto_install:
 	# Install JACK configuration file
 	install -D -m 644 debian/jackd.conf debian/mod-host/etc/jackd/jackd.conf
 	# Install systemd service
-	install -D -m 644 debian/jackd-modhost.service debian/mod-host/lib/systemd/system/jackd-modhost.service
+	install -D -m 644 debian/jackd-modhost.service debian/mod-host/usr/lib/systemd/system/jackd-modhost.service
 	# Install man page
 	install -D -m 644 doc/mod-host.1 debian/mod-host/usr/share/man/man1/mod-host.1
 
