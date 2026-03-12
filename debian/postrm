@@ -3,6 +3,8 @@ set -e
 
 case "$1" in
     purge)
+        # Remove cache directory
+        rm -rf /var/cache/rustyfoot
         # Remove generated udev rule
         rm -f /etc/udev/rules.d/80-mod-host.rules
         # Remove jackd config
