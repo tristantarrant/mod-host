@@ -5,9 +5,6 @@ set -e
 
 case "$1" in
     configure)
-        # Clean up service file from old location (moved to /usr/lib/systemd/system/)
-        rm -f /lib/systemd/system/jackd-modhost.service
-
         # Create dedicated system user for JACK/mod-host
         if ! getent passwd modhost >/dev/null 2>&1; then
             adduser --system --group --no-create-home \
