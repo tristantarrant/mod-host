@@ -265,10 +265,11 @@ int socket_send(int destination, const char *buffer, int size)
 
     while (size > 0)
     {
-        ret = send(destination, buffer, size, 0);
+        ret = send(destination, buffer, size, MSG_NOSIGNAL);
         if (ret < 0)
         {
             perror("send error");
+            break;
         }
         size -= ret;
         buffer += ret;
