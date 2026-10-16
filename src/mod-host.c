@@ -1428,7 +1428,12 @@ int jack_initialize(jack_client_t* client, const char* load_init)
     if (load_init != NULL && load_init[0] != '\0')
     {
         socket_port = atoi(load_init);
-        feedback_port = socket_port+1;
+        /* Don't open a feedback port: the stale-accept race between
+           consecutive service restarts causes mod-host to pair the wrong
+           feedback connection with the new command connection, leaving the
+           command socket unread. socket_send_feedback already handles the
+           disabled case gracefully (returns -1 immediately). */
+        feedback_port = 0;
     }
 
     if (mod_log != NULL && atoi(mod_log) != 0)
